@@ -1,0 +1,3 @@
+[submodule "3rdparty/libyaml"]
+	path = 3rdparty/libyaml
+	url = https://github.com/yaml/libyaml.git

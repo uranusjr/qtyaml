@@ -1,0 +1,79 @@
+regression:
+    -   -   -118.76
+        -   1992.3
+        -   -4692.5
+    -
+        -   1.6301
+        -   -13.979
+        -   30.37
+
+silos:
+    -   id: 1
+        cables:
+            -   id: 1
+                node-count: 2
+            -   id: 2
+                node-count: 1
+    -   id: 2
+        cables:
+            -   id: 1
+                node-count: 4
+    -   id: 3
+        cables:
+            -   id: 1
+                node-count: 1
+            -   id: 2
+                node-count: 2
+            -   id: 3
+                node-count: 3
+
+plcs:
+    -   id: 1
+        host: "localhost"
+        port: 9999
+        slave: "01"
+    -   id: 2
+        host: "localhost"
+        port: 9998
+        slave: "01"
+
+air-conditioners:
+    -   id: 1
+        plc: 1
+        set-power: "0000"
+        set-remote: "0001"
+        get-power: "0000"
+        silos:
+            -   1
+            -   2
+            -   3
+
+fans:
+    -   plc: 1
+        set-power: "0011"
+        get-power: "0011"
+        silo: 1
+
+    -   plc: 1
+        set-power: "0012"
+        get-power: "0012"
+        silo: 2
+
+valves:
+    -   plc: 1
+        set-rotate: "0003"
+        get-open: "0001"
+        get-closed: "0002"
+        silo: 1
+
+    -   plc: 1
+        set-rotate: "0004"
+        get-open: "0003"
+        get-closed: "0004"
+        silo: 2
+
+    -   plc: 1
+        set-rotate: "0005"
+        get-open: "0005"
+        get-closed: "0006"
+        silo: 3

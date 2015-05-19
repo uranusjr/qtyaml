@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>public.yaml</file>
+        <file>structure.yml</file>
+    </qresource>
+</RCC>
