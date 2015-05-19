@@ -70,7 +70,7 @@ bool QtYAML::Sequence::const_iterator::operator==(
 bool Sequence::const_iterator::operator!=(
         const Sequence::const_iterator &o) const
 {
-    return i == o.i;
+    return i != o.i;
 }
 
 Sequence::const_iterator &Sequence::const_iterator::operator++()
