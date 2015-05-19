@@ -67,6 +67,7 @@ void QtYAMLTests::testSilos()
 {
     int siloIndex = 0;
     int siloIds[3] = {1, 2, 3};
+    int cableLengths[3] = {2, 1, 3};
     QList<int> cableIds[3] = {
         QList<int>() << 1 << 2,
         QList<int>() << 1,
@@ -109,6 +110,8 @@ void QtYAMLTests::testSilos()
             cableIndex++;
         }
 
+        QCOMPARE(cableIndex, cableLengths[siloIndex]);
         siloIndex++;
     }
+    QCOMPARE(siloIndex, 3);
 }
