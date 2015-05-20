@@ -55,7 +55,7 @@ public:
     Document &operator=(const Document &other);
 
     static DocumentList fromYaml(const QByteArray &yaml, ParseError *error = 0);
-    QByteArray toYaml() const;
+//    QByteArray toYaml() const;
 
     bool isEmpty() const;
     bool isMapping() const;
@@ -63,6 +63,9 @@ public:
 
     Mapping mapping() const;
     Sequence sequence() const;
+
+    void setMapping(const Mapping &mapping);
+    void setSequence(const Sequence &sequence);
 };
 
 }   // namespace QtYAML

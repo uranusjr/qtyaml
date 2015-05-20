@@ -6,44 +6,34 @@
 namespace QtYAML
 {
 
-class ValuePrivate
-{
-    Q_DECLARE_PUBLIC(Value)
-    Value *q_ptr;
-
-public:
-    ValuePrivate(Value *q);
-    void setData(QSharedPointer<BasePrivate> d);
-
-private:
-    QSharedPointer<BasePrivate> data;
-    enum {
-        SCALAR,
-        MAPPING,
-        SEQUENCE,
-    } type;
-};
-
-ValuePrivate::ValuePrivate(Value *q) : q_ptr(q), data(0), type(SCALAR)
+ValuePrivate::ValuePrivate(Value *q) : q_ptr(q), data(0)
 {
 }
 
-void ValuePrivate::setData(QSharedPointer<BasePrivate> d)
+bool Value::isUndefined() const
 {
-    data = d;
-    if (d.isNull())
-        type = SCALAR;
-    else if (d->isMapping())
-        type = MAPPING;
-    else if (d->isSequence())
-        type = SEQUENCE;
-    else
-        type = SCALAR;
+    return d_ptr->data.isNull();
+}
+
+bool Value::isMapping() const
+{
+    return !d_ptr->data.isNull() && d_ptr->data->isMapping();
+}
+
+bool Value::isSequence() const
+{
+    return !d_ptr->data.isNull() && d_ptr->data->isSequence();
+}
+
+bool Value::isScalar() const
+{
+    return d_ptr->data.isNull() || !d_ptr->data->isMapping()
+            || !d_ptr->data->isSequence();
 }
 
 Value::Value(QSharedPointer<BasePrivate> data) : d_ptr(new ValuePrivate(this))
 {
-    d_ptr->setData(data);
+    d_ptr->data = data;
 }
 
 Value::Value() : d_ptr(new ValuePrivate(this))
@@ -52,12 +42,11 @@ Value::Value() : d_ptr(new ValuePrivate(this))
 
 Value::~Value()
 {
-    d_ptr.clear();
 }
 
 Mapping Value::toMapping() const
 {
-    if (d_ptr->type == ValuePrivate::MAPPING)
+    if (isMapping())
     {
         auto map = d_ptr->data.dynamicCast<MappingPrivate>();
         if (!map.isNull())
@@ -68,7 +57,7 @@ Mapping Value::toMapping() const
 
 Sequence Value::toSequence() const
 {
-    if (d_ptr->type == ValuePrivate::SEQUENCE)
+    if (isSequence())
     {
         auto seq = d_ptr->data.dynamicCast<SequencePrivate>();
         if (!seq.isNull())
@@ -79,7 +68,7 @@ Sequence Value::toSequence() const
 
 QString Value::toString() const
 {
-    if (d_ptr->type == ValuePrivate::SCALAR)
+    if (isScalar())
     {
         auto v = dynamic_cast<ScalarPrivate *>(d_ptr->data.data());
         if (v)

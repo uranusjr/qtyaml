@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     int status = 0;
     RUN(HighLevelTests, argc, argv);
-    RUN(QtYAMLTests, argc, argv)
+    RUN(QtYAMLTests, argc, argv);
     return status;
 }
 

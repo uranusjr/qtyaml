@@ -23,10 +23,6 @@ public:
     Mapping(const Mapping &other);
     Mapping &operator=(const Mapping &other);
 
-    friend class Document;
-    friend class Parser;
-    friend class Value;
-
     int size() const;
     inline int count() const { return size(); }
     inline int length() const { return size(); }
@@ -34,6 +30,10 @@ public:
     Value value(const QString &key) const;
     Value operator[](const QString &key) const;
 
+private:
+    friend class Document;
+    friend class Parser;
+    friend class Value;
 };
 
 }   // namespace QtYAML

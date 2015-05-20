@@ -34,16 +34,10 @@ public:
     ~DocumentPrivate();
 
     QSharedPointer<BasePrivate> root;
-
-    enum {
-        EMPTY,
-        MAPPING,
-        SEQUENCE,
-    } rootType;
 };
 
 DocumentPrivate::DocumentPrivate(Document *q) :
-    q_ptr(q), rootType(EMPTY)
+    q_ptr(q)
 {
 }
 
@@ -57,7 +51,6 @@ Document::Document() : d_ptr(new DocumentPrivate(this))
 
 Document::~Document()
 {
-    d_ptr.clear();
 }
 
 Document::Document(const Document &other) : d_ptr(other.d_ptr)
@@ -67,23 +60,18 @@ Document::Document(const Document &other) : d_ptr(other.d_ptr)
 Document &Document::operator=(const Document &other)
 {
     if (d_ptr != other.d_ptr)
-    {
-        d_ptr.clear();
         d_ptr = other.d_ptr;
-    }
     return *this;
 }
 
 Document::Document(const Mapping &mapping) : d_ptr(new DocumentPrivate(this))
 {
-    d_ptr->root = mapping.d_ptr;
-    d_ptr->rootType = DocumentPrivate::MAPPING;
+    setMapping(mapping);
 }
 
 Document::Document(const Sequence &sequence) : d_ptr(new DocumentPrivate(this))
 {
-    d_ptr->root = sequence.d_ptr;
-    d_ptr->rootType = DocumentPrivate::SEQUENCE;
+    setSequence(sequence);
 }
 
 DocumentList Document::fromYaml(const QByteArray &yaml, ParseError *error)
@@ -101,25 +89,19 @@ DocumentList Document::fromYaml(const QByteArray &yaml, ParseError *error)
     return documents;
 }
 
-QByteArray Document::toYaml() const
-{
-    // TODO: Implement me.
-    return QByteArray();
-}
-
 bool Document::isEmpty() const
 {
-    return d_ptr->rootType == DocumentPrivate::EMPTY;
+    return d_ptr->root.isNull();
 }
 
 bool Document::isMapping() const
 {
-    return d_ptr->rootType == DocumentPrivate::MAPPING;
+    return d_ptr->root->isMapping();
 }
 
 bool Document::isSequence() const
 {
-    return d_ptr->rootType == DocumentPrivate::SEQUENCE;
+    return d_ptr->root->isSequence();
 }
 
 Mapping Document::mapping() const
@@ -144,6 +126,18 @@ Sequence Document::sequence() const
             return Sequence(seq);
     }
     return Sequence();
+}
+
+void Document::setMapping(const QtYAML::Mapping &mapping)
+{
+    if (d_ptr->root != mapping.d_ptr)
+        d_ptr->root = mapping.d_ptr;
+}
+
+void Document::setSequence(const Sequence &sequence)
+{
+    if (d_ptr->root != sequence.d_ptr)
+        d_ptr->root = sequence.d_ptr;
 }
 
 }   // namespace QtYAML

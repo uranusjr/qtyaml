@@ -14,7 +14,6 @@ Mapping::Mapping(QSharedPointer<MappingPrivate> d) : d_ptr(d)
 
 Mapping::~Mapping()
 {
-    d_ptr.clear();
 }
 
 Mapping::Mapping(const Mapping &other) : d_ptr(other.d_ptr)
@@ -24,10 +23,7 @@ Mapping::Mapping(const Mapping &other) : d_ptr(other.d_ptr)
 Mapping &Mapping::operator=(const Mapping &other)
 {
     if (d_ptr != other.d_ptr)
-    {
-        d_ptr.clear();
         d_ptr = other.d_ptr;
-    }
     return *this;
 }
 

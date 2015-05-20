@@ -50,6 +50,17 @@ public:
     QString data;
 };
 
+class ValuePrivate
+{
+    Q_DECLARE_PUBLIC(Value)
+    Value *q_ptr;
+
+public:
+    ValuePrivate(Value *q);
+
+    QSharedPointer<BasePrivate> data;
+};
+
 }   // namespace QtYAML
 
 #endif // QYAML_P_H

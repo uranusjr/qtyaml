@@ -168,18 +168,16 @@ DocumentList Parser::parse(yaml_parser_t *parser, ParseError *error)
         // Blocks entries. Delegate to parse functions.
         case YAML_BLOCK_SEQUENCE_START_TOKEN:
         {
-            auto seq = QSharedPointer<SequencePrivate>(
-                        parseSequence(parser, error));
-            if (!seq)
+            auto seq = parseSequence(parser, error);
+            if (seq.isNull())
                 return DocumentList();
             documents.append(Document(Sequence((seq))));
             break;
         }
         case YAML_BLOCK_MAPPING_START_TOKEN:
         {
-            auto map = QSharedPointer<MappingPrivate>(
-                        parseMapping(parser, error));
-            if (!map)
+            auto map = parseMapping(parser, error);
+            if (map.isNull())
                 return DocumentList();
             documents.append(Document(Mapping(map)));
             break;

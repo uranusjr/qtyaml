@@ -23,12 +23,18 @@ public:
     Value();
     ~Value();
 
-    friend class Mapping;
-    friend class Sequence;
+    bool isUndefined() const;
+    bool isMapping() const;
+    bool isSequence() const;
+    bool isScalar() const;
 
     Mapping toMapping() const;
     Sequence toSequence() const;
     QString toString() const;
+
+private:
+    friend class Mapping;
+    friend class Sequence;
 };
 
 }   // namespace QtYAML

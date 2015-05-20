@@ -55,6 +55,7 @@ public:
         inline const_iterator operator++(int);
     };
 
+private:
     friend class Document;
     friend class Parser;
     friend class Value;

@@ -14,7 +14,6 @@ Sequence::Sequence(QSharedPointer<SequencePrivate> d) : d_ptr(d)
 
 Sequence::~Sequence()
 {
-    d_ptr.clear();
 }
 
 Sequence::Sequence(const Sequence &other) : d_ptr(other.d_ptr)
@@ -24,10 +23,7 @@ Sequence::Sequence(const Sequence &other) : d_ptr(other.d_ptr)
 Sequence &Sequence::operator=(const Sequence &other)
 {
     if (d_ptr != other.d_ptr)
-    {
-        d_ptr.clear();
         d_ptr = other.d_ptr;
-    }
     return *this;
 }
 
