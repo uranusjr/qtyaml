@@ -3,10 +3,14 @@
 
 #include <QtCore/QtGlobal>
 
-#if defined(QTYAML_LIBRARY)
-#  define QTYAMLSHARED_EXPORT Q_DECL_EXPORT
+#ifdef YAML_DECLARE_STATIC
+#  define QTYAMLSHARED_EXPORT
 #else
-#  define QTYAMLSHARED_EXPORT Q_DECL_IMPORT
+#  ifdef QTYAML_LIBRARY
+#    define QTYAMLSHARED_EXPORT Q_DECL_EXPORT
+#  else
+#    define QTYAMLSHARED_EXPORT Q_DECL_IMPORT
+#  endif
 #endif
 
 #endif // QTYAML_GLOBAL_H
