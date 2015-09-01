@@ -31,6 +31,8 @@ public:
     // Random access.
     Value at(int i) const;
     inline Value operator[](int i) const { return at(i); }
+    inline Value first() const { return at(0); }
+    inline Value last() const { return at(size() - 1); }
 
     // Const iteration.
     class const_iterator;
