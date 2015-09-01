@@ -21,6 +21,7 @@ class QtYAMLTests : public QObject
 private slots:
     void initTestCase();
     void testDocument();
+    void testQuotedString();
     void testSilos();
 
 private:

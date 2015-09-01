@@ -63,6 +63,13 @@ void QtYAMLTests::testDocument()
     QVERIFY(doc.isMapping());
 }
 
+void QtYAMLTests::testQuotedString()
+{
+    Sequence plcs = docs.first().mapping()["plcs"].toSequence();
+    QString host = plcs.first().toMapping()["host"].toString();
+    QCOMPARE(host, QString("localhost"));
+}
+
 void QtYAMLTests::testSilos()
 {
     int siloIndex = 0;
