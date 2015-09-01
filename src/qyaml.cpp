@@ -16,4 +16,8 @@ SequencePrivate::SequencePrivate(Sequence *q) : q_ptr(q)
 {
 }
 
+ScalarPrivate::ScalarPrivate() : style(YAML_ANY_SCALAR_STYLE)
+{
+}
+
 }   // namespace QtYAML

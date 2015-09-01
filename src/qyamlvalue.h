@@ -30,6 +30,8 @@ public:
 
     Mapping toMapping() const;
     Sequence toSequence() const;
+
+    bool toBoolean(bool *ok = 0) const;
     QString toString() const;
 
 private:

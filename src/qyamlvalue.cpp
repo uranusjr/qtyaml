@@ -1,7 +1,10 @@
+#include <QRegularExpression>
 #include "qyaml_p.h"
 #include "qyamlmapping.h"
 #include "qyamlsequence.h"
 #include "qyamlvalue.h"
+
+#define SETOK(p, v) if (p) *p = v;
 
 namespace QtYAML
 {
@@ -64,6 +67,40 @@ Sequence Value::toSequence() const
             return Sequence(seq);
     }
     return Sequence();
+}
+
+bool Value::toBoolean(bool *ok) const
+{
+    SETOK(ok, false);
+    if (!isScalar())
+        return false;
+
+    auto data = d_ptr->data.dynamicCast<ScalarPrivate>();
+    if (data.isNull())
+        return false;
+
+    if (!data->canBeBoolean())
+        return false;
+
+    static QRegularExpression trueExpression(
+                "^(y(?:es)?|on|t(?:rue)?)$",
+                QRegularExpression::CaseInsensitiveOption);
+    static QRegularExpression falseExpression(
+                "^(no?|off|f(?:alse)?)$",
+                QRegularExpression::CaseInsensitiveOption);
+
+    QString s = toString();
+    if (trueExpression.match(s).hasMatch())
+    {
+        SETOK(ok, true);
+        return true;
+    }
+    if (falseExpression.match(s).hasMatch())
+    {
+        SETOK(ok, true);
+        return false;
+    }
+    return false;
 }
 
 QString Value::toString() const

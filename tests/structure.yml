@@ -7,6 +7,10 @@ regression:
         -   -13.979
         -   30.37
 
+site:
+    name: "true"
+    ambient: true
+
 silos:
     -   id: 1
         cables:

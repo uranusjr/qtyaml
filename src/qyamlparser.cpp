@@ -74,6 +74,7 @@ QSharedPointer<MappingPrivate> parseMapping(
             else                // Scalar value token.
             {
                 auto val = QSharedPointer<ScalarPrivate>::create();
+                val->style = token.data.scalar.style;
                 val->data = toString(&token);
                 map->children.insert(key, val);
             }

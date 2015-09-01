@@ -70,6 +70,29 @@ void QtYAMLTests::testQuotedString()
     QCOMPARE(host, QString("localhost"));
 }
 
+void QtYAMLTests::testBoolean()
+{
+    Mapping site = docs.first().mapping()["site"].toMapping();
+
+    bool ok = false;
+    bool ambient = site["ambient"].toBoolean(&ok);
+    QVERIFY(ambient);
+    QVERIFY(ok);
+}
+
+void QtYAMLTests::testNonBoolean()
+{
+    Mapping site = docs.first().mapping()["site"].toMapping();
+
+    Value nameValue = site["name"];
+    QCOMPARE(nameValue.toString(), QString("true"));
+
+    bool ok = false;
+    bool name = nameValue.toBoolean(&ok);
+    QCOMPARE(name, false);
+    QCOMPARE(ok, false);
+}
+
 void QtYAMLTests::testSilos()
 {
     int siloIndex = 0;

@@ -22,6 +22,8 @@ private slots:
     void initTestCase();
     void testDocument();
     void testQuotedString();
+    void testBoolean();
+    void testNonBoolean();
     void testSilos();
 
 private:

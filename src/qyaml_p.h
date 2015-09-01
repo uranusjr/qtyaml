@@ -4,6 +4,9 @@
 #include <QHash>
 #include <QSharedPointer>
 #include <QString>
+extern "C" {
+#include <yaml.h>
+}
 
 namespace QtYAML
 {
@@ -16,8 +19,8 @@ class BasePrivate
 {
 public:
     virtual ~BasePrivate();
-    virtual inline bool isMapping() { return false; }
-    virtual inline bool isSequence() { return false; }
+    virtual inline bool isMapping() const { return false; }
+    virtual inline bool isSequence() const { return false; }
 };
 
 class MappingPrivate : public BasePrivate
@@ -27,7 +30,7 @@ class MappingPrivate : public BasePrivate
 
 public:
     MappingPrivate(Mapping *q = 0);
-    virtual inline bool isMapping() { return true; }
+    virtual inline bool isMapping() const { return true; }
 
     QHash< QString, QSharedPointer<BasePrivate> > children;
 };
@@ -39,7 +42,7 @@ class SequencePrivate : public BasePrivate
 
 public:
     SequencePrivate(Sequence *q = 0);
-    virtual inline bool isSequence() { return true; }
+    virtual inline bool isSequence() const { return true; }
 
     QList< QSharedPointer<BasePrivate> > children;
 };
@@ -47,6 +50,21 @@ public:
 class ScalarPrivate : public BasePrivate
 {
 public:
+    ScalarPrivate();
+    inline bool canBeBoolean() const
+    {
+        switch (style)
+        {
+        case YAML_ANY_SCALAR_STYLE:
+        case YAML_PLAIN_SCALAR_STYLE:
+            return true;
+        default:
+            break;
+        }
+        return false;
+    }
+
+    yaml_scalar_style_t style;
     QString data;
 };
 
