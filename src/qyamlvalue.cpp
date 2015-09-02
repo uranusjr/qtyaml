@@ -136,14 +136,14 @@ int Value::toInt(bool *ok) const
      */
     SETOK(ok, false);
     if (!isScalar())
-        return false;
+        return 0;
 
     auto v = d_ptr->data.dynamicCast<ScalarPrivate>();
     if (v.isNull())
-        return false;
+        return 0;
 
     if (!v->canBeInteger())
-        return false;
+        return 0;
 
     // Ignore underscores.
     QString s = v->data.replace('_', "");
@@ -163,7 +163,10 @@ int Value::toInt(bool *ok) const
 
     // Special case 0, +0, and -0.
     if (s == "0")
+    {
+        SETOK(ok, true);
         return 0;
+    }
 
     // Either binary, hexadecimal, or octal.
     if (s.startsWith('0'))
@@ -185,7 +188,7 @@ int Value::toInt(bool *ok) const
         bool iok = false;
         int result = s.toInt(&iok, base);
         SETOK(ok, iok);
-        return sign * result;
+        return iok ? sign * result : 0;
     }
 
     // Sexagesimal.
@@ -213,7 +216,7 @@ int Value::toInt(bool *ok) const
     int result = s.toInt(&iok, 10);
 
     SETOK(ok, iok);
-    return sign * result;
+    return iok ? sign * result : 0;
 }
 
 QString Value::toString(bool *ok) const
