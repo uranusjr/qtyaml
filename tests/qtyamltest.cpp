@@ -75,11 +75,11 @@ void QtYAMLTests::testBoolean()
     Mapping site = docs.first().mapping()["site"].toMapping();
 
     bool ok = false;
-    QVERIFY(site["ambient"].toBoolean(&ok));
+    QVERIFY(site["ambient"].toBool(&ok));
     QVERIFY(ok);
 
     ok = false;
-    QCOMPARE(site["whatever"].toBoolean(&ok), false);
+    QCOMPARE(site["whatever"].toBool(&ok), false);
     QVERIFY(ok);
 }
 
@@ -91,7 +91,7 @@ void QtYAMLTests::testNonBoolean()
     QCOMPARE(nameValue.toString(), QString("true"));
 
     bool ok = false;
-    QCOMPARE(nameValue.toBoolean(&ok), false);
+    QCOMPARE(nameValue.toBool(&ok), false);
     QCOMPARE(ok, false);
 }
 
@@ -99,9 +99,9 @@ void QtYAMLTests::testBooleanNoFlag()
 {
     Mapping site = docs.first().mapping()["site"].toMapping();
 
-    QCOMPARE(site["ambient"].toBoolean(), true);
-    QCOMPARE(site["whatever"].toBoolean(), false);
-    QCOMPARE(site["name"].toBoolean(), false);
+    QCOMPARE(site["ambient"].toBool(), true);
+    QCOMPARE(site["whatever"].toBool(), false);
+    QCOMPARE(site["name"].toBool(), false);
 }
 
 void QtYAMLTests::testSilos()

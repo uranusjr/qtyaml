@@ -31,8 +31,8 @@ public:
     Mapping toMapping() const;
     Sequence toSequence() const;
 
-    bool toBoolean(bool *ok = 0) const;
     QString toString(bool *ok = 0) const;
+    bool toBool(bool *ok = 0) const;
 
 private:
     friend class Mapping;

@@ -100,7 +100,7 @@ Sequence Value::toSequence() const
     return Sequence();
 }
 
-bool Value::toBoolean(bool *ok) const
+bool Value::toBool(bool *ok) const
 {
     SETOK(ok, false);
     if (!isScalar())
