@@ -9,6 +9,37 @@
 namespace QtYAML
 {
 
+static QHash<QString, bool> getBooleanValueMap()
+{
+    QHash<QString, bool> map;
+    map["y"] = true;
+    map["Y"] = true;
+    map["yes"] = true;
+    map["Yes"] = true;
+    map["YES"] = true;
+    map["n"] = false;
+    map["N"] = false;
+    map["no"] = false;
+    map["No"] = false;
+    map["NO"] = false;
+    map["true"] = true;
+    map["True"] = true;
+    map["TRUE"] = true;
+    map["false"] = false;
+    map["False"] = false;
+    map["FALSE"] = false;
+    map["on"] = true;
+    map["On"] = true;
+    map["ON"] = true;
+    map["off"] = false;
+    map["Off"] = false;
+    map["OFF"] = false;
+    return map;
+}
+
+static QHash<QString, bool> gBooleanValueMap = getBooleanValueMap();
+
+
 ValuePrivate::ValuePrivate(Value *q) : q_ptr(q), data(0)
 {
 }
@@ -82,36 +113,26 @@ bool Value::toBoolean(bool *ok) const
     if (!data->canBeBoolean())
         return false;
 
-    static QRegularExpression trueExpression(
-                "^(y(?:es)?|on|t(?:rue)?)$",
-                QRegularExpression::CaseInsensitiveOption);
-    static QRegularExpression falseExpression(
-                "^(no?|off|f(?:alse)?)$",
-                QRegularExpression::CaseInsensitiveOption);
-
     QString s = toString();
-    if (trueExpression.match(s).hasMatch())
-    {
-        SETOK(ok, true);
-        return true;
-    }
-    if (falseExpression.match(s).hasMatch())
-    {
-        SETOK(ok, true);
+    if (!gBooleanValueMap.contains(s))
         return false;
-    }
-    return false;
+
+    SETOK(ok, true);
+    return gBooleanValueMap.value(s);
 }
 
-QString Value::toString() const
+QString Value::toString(bool *ok) const
 {
-    if (isScalar())
-    {
-        auto v = dynamic_cast<ScalarPrivate *>(d_ptr->data.data());
-        if (v)
-            return v->data;
-    }
-    return QString();
+    SETOK(ok, false);
+    if (!isScalar())
+        return QString();
+
+    auto v = d_ptr->data.dynamicCast<ScalarPrivate>();
+    if (v.isNull())
+        return QString();
+
+    SETOK(ok, true);
+    return v->data;
 }
 
 }   // namespace QtYAML

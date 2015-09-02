@@ -32,7 +32,7 @@ public:
     Sequence toSequence() const;
 
     bool toBoolean(bool *ok = 0) const;
-    QString toString() const;
+    QString toString(bool *ok = 0) const;
 
 private:
     friend class Mapping;
