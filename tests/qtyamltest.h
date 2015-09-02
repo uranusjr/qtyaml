@@ -24,6 +24,7 @@ private slots:
     void testQuotedString();
     void testBoolean();
     void testNonBoolean();
+    void testBooleanNoFlag();
     void testSilos();
 
 private:
