@@ -106,19 +106,114 @@ bool Value::toBool(bool *ok) const
     if (!isScalar())
         return false;
 
-    auto data = d_ptr->data.dynamicCast<ScalarPrivate>();
-    if (data.isNull())
+    auto v = d_ptr->data.dynamicCast<ScalarPrivate>();
+    if (v.isNull())
         return false;
 
-    if (!data->canBeBoolean())
+    if (!v->canBeBoolean())
         return false;
 
-    QString s = toString();
+    QString s = v->data;
     if (!gBooleanValueMap.contains(s))
         return false;
 
     SETOK(ok, true);
     return gBooleanValueMap.value(s);
+}
+
+int Value::toInt(bool *ok) const
+{
+    /* YAML integers can be of 5 forms:
+     *
+     * 1. "Normal" numerical values without leading "0" is decimal.
+     * 2. Sequence starting with "0x" is hexadecimal.
+     * 3. Sequence starting with "0b" is binary.
+     * 4. Sequence starting with "0" (not followed by "x" or "b") is octal.
+     * 5. Sets of two digit decimal values separated by ":" form a sexagesimal.
+     *
+     * Any form can have a prefix of "+" or "-" indicating signedness.
+     * Underscores ("_") in the number (non-prefix) sequence are ignored.
+     */
+    SETOK(ok, false);
+    if (!isScalar())
+        return false;
+
+    auto v = d_ptr->data.dynamicCast<ScalarPrivate>();
+    if (v.isNull())
+        return false;
+
+    if (!v->canBeInteger())
+        return false;
+
+    // Ignore underscores.
+    QString s = v->data.replace('_', "");
+
+    // Calculate signedness.
+    int sign = 1;
+    if (s.startsWith('-'))
+    {
+        s.remove(0, 1);
+        sign = -1;
+    }
+    else if (s.startsWith('+'))
+    {
+        s.remove(0, 1);
+        sign = 1;
+    }
+
+    // Special case 0, +0, and -0.
+    if (s == "0")
+        return 0;
+
+    // Either binary, hexadecimal, or octal.
+    if (s.startsWith('0'))
+    {
+        s.remove(0, 1);
+
+        int base = 8;
+        if (s.startsWith('b'))
+        {
+            s.remove(0, 1);
+            base = 2;
+        }
+        else if (s.startsWith('x'))
+        {
+            s.remove(0, 1);
+            base = 16;
+        }
+
+        bool iok = false;
+        int result = s.toInt(&iok, base);
+        SETOK(ok, iok);
+        return sign * result;
+    }
+
+    // Sexagesimal.
+    if (s.contains(':'))
+    {
+        int unit = 1;
+        int result = 0;
+
+        QStringList parts = s.split(':');
+        for (auto it = parts.constEnd(); it != parts.constBegin(); it--)
+        {
+            bool iok = false;
+            int value = (it - 1)->toInt(&iok, 10);
+            if (!iok)
+                return 0;
+            result += value * unit;
+            unit *= 60;
+        }
+        SETOK(ok, true);
+        return sign * result;
+    }
+
+    // Decimal.
+    bool iok = false;
+    int result = s.toInt(&iok, 10);
+
+    SETOK(ok, iok);
+    return sign * result;
 }
 
 QString Value::toString(bool *ok) const

@@ -46,7 +46,66 @@ void HighLevelTests::testParse()
 }
 
 
-void QtYAMLTests::initTestCase()
+void QtYAMLDotOrgTests::initTestCase()
+{
+    QFile f(":/yaml.org.yml");
+    f.open(QIODevice::ReadOnly);
+    QByteArray yaml = f.readAll();
+    f.close();
+
+    docs = Document::fromYaml(yaml);
+}
+
+void QtYAMLDotOrgTests::testIntCanonical()
+{
+    Mapping values = docs.first().mapping()["int"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["canonical"].toInt(&ok), 685230);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testIntDecimal()
+{
+    Mapping values = docs.first().mapping()["int"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["decimal"].toInt(&ok), 685230);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testIntOctal()
+{
+    Mapping values = docs.first().mapping()["int"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["octal"].toInt(&ok), 685230);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testIntHexadecimal()
+{
+    Mapping values = docs.first().mapping()["int"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["hexadecimal"].toInt(&ok), 0x0a74ae);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testIntBinary()
+{
+    Mapping values = docs.first().mapping()["int"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["binary"].toInt(&ok), 685230);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testIntSexagesimal()
+{
+    Mapping values = docs.first().mapping()["int"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["sexagesimal"].toInt(&ok), 685230);
+    QVERIFY(ok);
+}
+
+
+void QtYAMLPracticalTests::initTestCase()
 {
     QFile f(":/structure.yml");
     f.open(QIODevice::ReadOnly);
@@ -56,21 +115,21 @@ void QtYAMLTests::initTestCase()
     docs = Document::fromYaml(yaml);
 }
 
-void QtYAMLTests::testDocument()
+void QtYAMLPracticalTests::testDocument()
 {
     QCOMPARE(docs.size(), 1);
     Document doc = docs.first();
     QVERIFY(doc.isMapping());
 }
 
-void QtYAMLTests::testQuotedString()
+void QtYAMLPracticalTests::testQuotedString()
 {
     Sequence plcs = docs.first().mapping()["plcs"].toSequence();
     QString host = plcs.first().toMapping()["host"].toString();
     QCOMPARE(host, QString("localhost"));
 }
 
-void QtYAMLTests::testBoolean()
+void QtYAMLPracticalTests::testBoolean()
 {
     Mapping site = docs.first().mapping()["site"].toMapping();
 
@@ -83,7 +142,7 @@ void QtYAMLTests::testBoolean()
     QVERIFY(ok);
 }
 
-void QtYAMLTests::testNonBoolean()
+void QtYAMLPracticalTests::testNonBoolean()
 {
     Mapping site = docs.first().mapping()["site"].toMapping();
 
@@ -95,7 +154,7 @@ void QtYAMLTests::testNonBoolean()
     QCOMPARE(ok, false);
 }
 
-void QtYAMLTests::testBooleanNoFlag()
+void QtYAMLPracticalTests::testBooleanNoFlag()
 {
     Mapping site = docs.first().mapping()["site"].toMapping();
 
@@ -104,7 +163,31 @@ void QtYAMLTests::testBooleanNoFlag()
     QCOMPARE(site["name"].toBool(), false);
 }
 
-void QtYAMLTests::testSilos()
+void QtYAMLPracticalTests::testInteger()
+{
+    Sequence plcs = docs.first().mapping()["plcs"].toSequence();
+    Mapping plc = plcs.first().toMapping();
+
+    QCOMPARE(plc["id"].toString(), QString("1"));
+    QCOMPARE(plc["port"].toString(), QString("9999"));
+    QCOMPARE(plc["slave"].toString(), QString("01"));
+
+    bool ok;
+
+    ok = false;
+    QCOMPARE(plc["id"].toInt(&ok), 1);
+    QVERIFY(ok);
+
+    ok = false;
+    QCOMPARE(plc["port"].toInt(&ok), 9999);
+    QVERIFY(ok);
+
+    ok = true;
+    plc["slave"].toInt(&ok);
+    QVERIFY(!ok);
+}
+
+void QtYAMLPracticalTests::testSilos()
 {
     int siloIndex = 0;
     int siloIds[3] = {1, 2, 3};

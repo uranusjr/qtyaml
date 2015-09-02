@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>public.yaml</file>
         <file>structure.yml</file>
+        <file>yaml.org.yml</file>
     </qresource>
 </RCC>

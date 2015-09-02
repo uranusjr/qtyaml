@@ -51,22 +51,36 @@ class ScalarPrivate : public BasePrivate
 {
 public:
     ScalarPrivate();
-    inline bool canBeBoolean() const
-    {
-        switch (style)
-        {
-        case YAML_ANY_SCALAR_STYLE:
-        case YAML_PLAIN_SCALAR_STYLE:
-            return true;
-        default:
-            break;
-        }
-        return false;
-    }
+    inline bool canBeBoolean() const { return mayBePlain(); }
+    inline bool canBeInteger() const;
+
+    inline bool mayBePlain() const;
 
     yaml_scalar_style_t style;
     QString data;
 };
+
+bool ScalarPrivate::canBeInteger() const
+{
+    if (!mayBePlain())
+        return false;
+    if (data.isEmpty())
+        return false;
+    return true;
+}
+
+bool ScalarPrivate::mayBePlain() const
+{
+    switch (style)
+    {
+    case YAML_ANY_SCALAR_STYLE:
+    case YAML_PLAIN_SCALAR_STYLE:
+        return true;
+    default:
+        break;
+    }
+    return false;
+}
 
 class ValuePrivate
 {

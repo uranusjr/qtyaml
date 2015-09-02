@@ -34,6 +34,8 @@ public:
     QString toString(bool *ok = 0) const;
     bool toBool(bool *ok = 0) const;
 
+    int toInt(bool *ok = 0) const;
+
 private:
     friend class Mapping;
     friend class Sequence;

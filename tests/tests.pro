@@ -23,3 +23,5 @@ HEADERS += \
 
 RESOURCES += \
     testassets.qrc
+
+DISTFILES +=
