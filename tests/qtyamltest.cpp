@@ -46,7 +46,7 @@ void HighLevelTests::testParse()
 }
 
 
-void QtYAMLDotOrgTests::initTestCase()
+void YAMLDotOrgTests::initTestCase()
 {
     QFile f(":/yaml.org.yml");
     f.open(QIODevice::ReadOnly);
@@ -56,7 +56,7 @@ void QtYAMLDotOrgTests::initTestCase()
     docs = Document::fromYaml(yaml);
 }
 
-void QtYAMLDotOrgTests::testBoolCanonical()
+void YAMLDotOrgTests::testBoolCanonical()
 {
     Mapping values = docs.first().mapping()["bool"].toMapping();
     bool ok = false;
@@ -64,7 +64,7 @@ void QtYAMLDotOrgTests::testBoolCanonical()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testBoolAnswer()
+void YAMLDotOrgTests::testBoolAnswer()
 {
     Mapping values = docs.first().mapping()["bool"].toMapping();
     bool ok = false;
@@ -72,7 +72,7 @@ void QtYAMLDotOrgTests::testBoolAnswer()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testBoolLogical()
+void YAMLDotOrgTests::testBoolLogical()
 {
     Mapping values = docs.first().mapping()["bool"].toMapping();
     bool ok = false;
@@ -80,7 +80,7 @@ void QtYAMLDotOrgTests::testBoolLogical()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testBoolOption()
+void YAMLDotOrgTests::testBoolOption()
 {
     Mapping values = docs.first().mapping()["bool"].toMapping();
     bool ok = false;
@@ -88,7 +88,7 @@ void QtYAMLDotOrgTests::testBoolOption()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testIntCanonical()
+void YAMLDotOrgTests::testIntCanonical()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
     bool ok = false;
@@ -96,7 +96,7 @@ void QtYAMLDotOrgTests::testIntCanonical()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testIntDecimal()
+void YAMLDotOrgTests::testIntDecimal()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
     bool ok = false;
@@ -104,7 +104,7 @@ void QtYAMLDotOrgTests::testIntDecimal()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testIntOctal()
+void YAMLDotOrgTests::testIntOctal()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
     bool ok = false;
@@ -112,7 +112,7 @@ void QtYAMLDotOrgTests::testIntOctal()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testIntHexadecimal()
+void YAMLDotOrgTests::testIntHexadecimal()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
     bool ok = false;
@@ -120,7 +120,7 @@ void QtYAMLDotOrgTests::testIntHexadecimal()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testIntBinary()
+void YAMLDotOrgTests::testIntBinary()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
     bool ok = false;
@@ -128,7 +128,7 @@ void QtYAMLDotOrgTests::testIntBinary()
     QVERIFY(ok);
 }
 
-void QtYAMLDotOrgTests::testIntSexagesimal()
+void YAMLDotOrgTests::testIntSexagesimal()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
     bool ok = false;
@@ -137,7 +137,7 @@ void QtYAMLDotOrgTests::testIntSexagesimal()
 }
 
 
-void QtYAMLPracticalTests::initTestCase()
+void PracticalTests::initTestCase()
 {
     QFile f(":/structure.yml");
     f.open(QIODevice::ReadOnly);
@@ -147,14 +147,14 @@ void QtYAMLPracticalTests::initTestCase()
     docs = Document::fromYaml(yaml);
 }
 
-void QtYAMLPracticalTests::testDocument()
+void PracticalTests::testDocument()
 {
     QCOMPARE(docs.size(), 1);
     Document doc = docs.first();
     QVERIFY(doc.isMapping());
 }
 
-void QtYAMLPracticalTests::testSite()
+void PracticalTests::testSite()
 {
     Mapping site = docs.first().mapping()["site"].toMapping();
 
@@ -172,7 +172,7 @@ void QtYAMLPracticalTests::testSite()
     QCOMPARE(ok, false);
 }
 
-void QtYAMLPracticalTests::testPLCs()
+void PracticalTests::testPLCs()
 {
     QList<QVariantHash> plcInfos;
 
@@ -218,7 +218,7 @@ void QtYAMLPracticalTests::testPLCs()
     }
 }
 
-void QtYAMLPracticalTests::testSilos()
+void PracticalTests::testSilos()
 {
     int siloIndex = 0;
     int siloIds[3] = {1, 2, 3};

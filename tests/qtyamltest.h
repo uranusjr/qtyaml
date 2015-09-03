@@ -14,7 +14,7 @@ private slots:
     void testParse();
 };
 
-class QtYAMLDotOrgTests : public QObject
+class YAMLDotOrgTests : public QObject
 {
     Q_OBJECT
 
@@ -37,7 +37,7 @@ private:
     DocumentList docs;
 };
 
-class QtYAMLPracticalTests : public QObject
+class PracticalTests : public QObject
 {
     Q_OBJECT
 

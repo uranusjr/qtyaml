@@ -1,7 +1,7 @@
 #include <QCoreApplication>
 #include "qtyamltest.h"
 
-#define RUN(klass, argc, argv) \
+#define RUN(klass) \
     do { \
         klass *obj = new klass(); \
         status |= QTest::qExec(obj, argc, argv); \
@@ -14,9 +14,8 @@ int main(int argc, char *argv[])
     Q_UNUSED(app);
 
     int status = 0;
-    RUN(HighLevelTests, argc, argv);
-    RUN(QtYAMLDotOrgTests, argc, argv);
-    RUN(QtYAMLPracticalTests, argc, argv);
+    RUN(HighLevelTests);
+    RUN(YAMLDotOrgTests);
+    RUN(PracticalTests);
     return status;
 }
-
