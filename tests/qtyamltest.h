@@ -21,6 +21,11 @@ class QtYAMLDotOrgTests : public QObject
 private slots:
     void initTestCase();
 
+    void testBoolCanonical();
+    void testBoolAnswer();
+    void testBoolLogical();
+    void testBoolOption();
+
     void testIntCanonical();
     void testIntDecimal();
     void testIntOctal();
@@ -40,14 +45,8 @@ private slots:
     void initTestCase();
 
     void testDocument();
-    void testQuotedString();
-
-    void testBoolean();
-    void testNonBoolean();
-    void testBooleanNoFlag();
-
-    void testInteger();
-
+    void testSite();
+    void testPLCs();
     void testSilos();
 
 private:

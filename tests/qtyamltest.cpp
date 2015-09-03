@@ -56,6 +56,38 @@ void QtYAMLDotOrgTests::initTestCase()
     docs = Document::fromYaml(yaml);
 }
 
+void QtYAMLDotOrgTests::testBoolCanonical()
+{
+    Mapping values = docs.first().mapping()["bool"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["canonical"].toBool(&ok), true);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testBoolAnswer()
+{
+    Mapping values = docs.first().mapping()["bool"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["answer"].toBool(&ok), false);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testBoolLogical()
+{
+    Mapping values = docs.first().mapping()["bool"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["logical"].toBool(&ok), true);
+    QVERIFY(ok);
+}
+
+void QtYAMLDotOrgTests::testBoolOption()
+{
+    Mapping values = docs.first().mapping()["bool"].toMapping();
+    bool ok = false;
+    QCOMPARE(values["option"].toBool(&ok), true);
+    QVERIFY(ok);
+}
+
 void QtYAMLDotOrgTests::testIntCanonical()
 {
     Mapping values = docs.first().mapping()["int"].toMapping();
@@ -122,69 +154,68 @@ void QtYAMLPracticalTests::testDocument()
     QVERIFY(doc.isMapping());
 }
 
-void QtYAMLPracticalTests::testQuotedString()
-{
-    Sequence plcs = docs.first().mapping()["plcs"].toSequence();
-    QString host = plcs.first().toMapping()["host"].toString();
-    QCOMPARE(host, QString("localhost"));
-}
-
-void QtYAMLPracticalTests::testBoolean()
+void QtYAMLPracticalTests::testSite()
 {
     Mapping site = docs.first().mapping()["site"].toMapping();
-
-    bool ok = false;
-    QVERIFY(site["ambient"].toBool(&ok));
-    QVERIFY(ok);
-
-    ok = false;
-    QCOMPARE(site["whatever"].toBool(&ok), false);
-    QVERIFY(ok);
-}
-
-void QtYAMLPracticalTests::testNonBoolean()
-{
-    Mapping site = docs.first().mapping()["site"].toMapping();
-
-    Value nameValue = site["name"];
-    QCOMPARE(nameValue.toString(), QString("true"));
-
-    bool ok = false;
-    QCOMPARE(nameValue.toBool(&ok), false);
-    QCOMPARE(ok, false);
-}
-
-void QtYAMLPracticalTests::testBooleanNoFlag()
-{
-    Mapping site = docs.first().mapping()["site"].toMapping();
-
-    QCOMPARE(site["ambient"].toBool(), true);
-    QCOMPARE(site["whatever"].toBool(), false);
-    QCOMPARE(site["name"].toBool(), false);
-}
-
-void QtYAMLPracticalTests::testInteger()
-{
-    Sequence plcs = docs.first().mapping()["plcs"].toSequence();
-    Mapping plc = plcs.first().toMapping();
-
-    QCOMPARE(plc["id"].toString(), QString("1"));
-    QCOMPARE(plc["port"].toString(), QString("9999"));
-    QCOMPARE(plc["slave"].toString(), QString("01"));
 
     bool ok;
 
     ok = false;
-    QCOMPARE(plc["id"].toInt(&ok), 1);
+    QVERIFY(site["ambient"].toBool(&ok));
     QVERIFY(ok);
+
+    Value nameValue = site["name"];
+    QCOMPARE(nameValue.toString(), QString("true"));
 
     ok = false;
-    QCOMPARE(plc["port"].toInt(&ok), 9999);
-    QVERIFY(ok);
+    QCOMPARE(nameValue.toBool(&ok), false);
+    QCOMPARE(ok, false);
+}
 
-    ok = true;
-    plc["slave"].toInt(&ok);
-    QVERIFY(!ok);
+void QtYAMLPracticalTests::testPLCs()
+{
+    QList<QVariantHash> plcInfos;
+
+    QVariantHash plcInfo;
+    plcInfo["id"] = 1;
+    plcInfo["host"] = "localhost";
+    plcInfo["port"] = 9999;
+    plcInfo["slave"] = "01";
+    plcInfos << plcInfo;
+
+    plcInfo.clear();
+    plcInfo["id"] = 2;
+    plcInfo["host"] = "localhost";
+    plcInfo["port"] = 9998;
+    plcInfo["slave"] = "01";
+    plcInfos << plcInfo;
+
+    bool ok;
+    int i = 0;
+    foreach (const Value &value, docs.first().mapping()["plcs"].toSequence())
+    {
+        Mapping plc = value.toMapping();
+        QVariantHash info = plcInfos[i];
+
+        QCOMPARE(plc["id"].toString(), info["id"].toString());
+        QCOMPARE(plc["host"].toString(), info["host"].toString());
+        QCOMPARE(plc["port"].toString(), info["port"].toString());
+        QCOMPARE(plc["slave"].toString(), info["slave"].toString());
+
+        ok = false;
+        QCOMPARE(plc["id"].toInt(&ok), info["id"].toInt());
+        QVERIFY(ok);
+
+        ok = false;
+        QCOMPARE(plc["port"].toInt(&ok), info["port"].toInt());
+        QVERIFY(ok);
+
+        ok = true;
+        plc["slave"].toInt(&ok);
+        QVERIFY(!ok);
+
+        i++;
+    }
 }
 
 void QtYAMLPracticalTests::testSilos()
@@ -210,7 +241,7 @@ void QtYAMLPracticalTests::testSilos()
         Mapping silo = v.toMapping();
 
         bool ok = false;
-        QCOMPARE(silo["id"].toString().toInt(&ok), siloIds[siloIndex]);
+        QCOMPARE(silo["id"].toInt(&ok), siloIds[siloIndex]);
         QVERIFY(ok);
 
         // TODO: Implement this.
@@ -223,12 +254,12 @@ void QtYAMLPracticalTests::testSilos()
             Mapping cable = v.toMapping();
 
             bool ok = false;
-            QCOMPARE(cable["id"].toString().toInt(&ok),
-                    cableIds[siloIndex][cableIndex]);
+            QCOMPARE(cable["id"].toInt(&ok),
+                     cableIds[siloIndex][cableIndex]);
             QVERIFY(ok);
 
-            QCOMPARE(cable["node-count"].toString().toInt(&ok),
-                    nodeCounts[siloIndex][cableIndex]);
+            QCOMPARE(cable["node-count"].toInt(&ok),
+                     nodeCounts[siloIndex][cableIndex]);
             QVERIFY(ok);
 
             cableIndex++;

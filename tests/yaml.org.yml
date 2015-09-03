@@ -1,3 +1,9 @@
+bool:
+    canonical: y
+    answer: NO
+    logical: True
+    option: on
+
 int:
     canonical: 685230
     decimal: +685_230

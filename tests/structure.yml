@@ -10,7 +10,6 @@ regression:
 site:
     name: "true"
     ambient: true
-    whatever: false
 
 silos:
     -   id: 1
