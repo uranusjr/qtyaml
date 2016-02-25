@@ -136,7 +136,6 @@ void YAMLDotOrgTests::testIntSexagesimal()
     QVERIFY(ok);
 }
 
-
 void PracticalTests::initTestCase()
 {
     QFile f(":/structure.yml");

@@ -47,10 +47,7 @@ air-conditioners:
         set-power: "0000"
         set-remote: "0001"
         get-power: "0000"
-        silos:
-            -   1
-            -   2
-            -   3
+        silos: [1,2,3]
 
 fans:
     -   plc: 1
