@@ -3,9 +3,8 @@
 
 #define RUN(klass) \
     do { \
-        klass *obj = new klass(); \
-        status |= QTest::qExec(obj, argc, argv); \
-        delete obj; \
+        klass obj; \
+        status |= QTest::qExec(&obj, argc, argv); \
     } while(0)
 
 int main(int argc, char *argv[])
