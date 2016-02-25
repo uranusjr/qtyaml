@@ -55,6 +55,10 @@ public:
         inline bool operator!=(const const_iterator &o) const;
         inline const_iterator &operator++();
         inline const_iterator operator++(int);
+
+        inline const_iterator operator+(int j) const;
+        inline const_iterator operator-(int j) const;
+        inline int operator-(const const_iterator &j) const;
     };
 
 private:
@@ -87,6 +91,22 @@ Sequence::const_iterator Sequence::const_iterator::operator++(int)
     const_iterator n = *this;
     ++i;
     return n;
+}
+
+Sequence::const_iterator Sequence::const_iterator::operator+(int j) const
+{
+    return const_iterator(a, i + j);
+}
+
+Sequence::const_iterator Sequence::const_iterator::operator-(int j) const
+{
+    return const_iterator(a, i - j);
+}
+
+int Sequence::const_iterator::operator-(
+        const Sequence::const_iterator &j) const
+{
+    return int(i - j.i);
 }
 
 }   // namespace QtYAML
