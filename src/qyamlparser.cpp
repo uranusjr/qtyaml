@@ -8,7 +8,8 @@ namespace QtYAML
 {
 
 QSharedPointer<SequencePrivate> parseSequence(
-        yaml_parser_t *parser, ParseError *error);
+        yaml_parser_t *parser, yaml_token_type_t endTokenType,
+        ParseError *error);
 
 static inline QString toString(yaml_token_t *token)
 {
@@ -34,7 +35,8 @@ bool parseOne(yaml_parser_t *parser, yaml_token_t *token, ParseError *error)
 }
 
 QSharedPointer<MappingPrivate> parseMapping(
-        yaml_parser_t *parser, ParseError *error)
+        yaml_parser_t *parser, yaml_token_type_t endTokenType,
+        ParseError *error)
 {
     yaml_token_t token;
     QString key = "";   // Null string = next value is key.
@@ -52,7 +54,7 @@ QSharedPointer<MappingPrivate> parseMapping(
             break;
         case YAML_BLOCK_MAPPING_START_TOKEN:    // Inner mapping.
         {
-            auto inner = parseMapping(parser, error);
+            auto inner = parseMapping(parser, YAML_BLOCK_END_TOKEN, error);
             if (inner.isNull())
                 return QSharedPointer<MappingPrivate>();
             map->children.insert(key, inner);
@@ -60,7 +62,25 @@ QSharedPointer<MappingPrivate> parseMapping(
         }
         case YAML_BLOCK_SEQUENCE_START_TOKEN:   // Inner sequence.
         {
-            auto inner = parseSequence(parser, error);
+            auto inner = parseSequence(parser, YAML_BLOCK_END_TOKEN, error);
+            if (inner.isNull())
+                return QSharedPointer<MappingPrivate>();
+            map->children.insert(key, inner);
+            break;
+        }
+        case YAML_FLOW_MAPPING_START_TOKEN:    // Inner flow mapping.
+        {
+            auto inner = parseMapping(
+                        parser, YAML_FLOW_MAPPING_END_TOKEN, error);
+            if (inner.isNull())
+                return QSharedPointer<MappingPrivate>();
+            map->children.insert(key, inner);
+            break;
+        }
+        case YAML_FLOW_SEQUENCE_START_TOKEN:   // Inner flow sequence.
+        {
+            auto inner = parseSequence(
+                        parser, YAML_FLOW_SEQUENCE_END_TOKEN, error);
             if (inner.isNull())
                 return QSharedPointer<MappingPrivate>();
             map->children.insert(key, inner);
@@ -83,13 +103,14 @@ QSharedPointer<MappingPrivate> parseMapping(
             // TODO: Error on illogical tokens.
             break;
         }
-    } while (token.type != YAML_BLOCK_END_TOKEN);
+    } while (token.type != endTokenType);
 
     return map;
 }
 
 QSharedPointer<SequencePrivate> parseSequence(
-        yaml_parser_t *parser, ParseError *error)
+        yaml_parser_t *parser, yaml_token_type_t endTokenType,
+        ParseError *error)
 {
     yaml_token_t token;
 
@@ -103,7 +124,7 @@ QSharedPointer<SequencePrivate> parseSequence(
         {
         case YAML_BLOCK_MAPPING_START_TOKEN:    // Inner mapping.
         {
-            auto inner = parseMapping(parser, error);
+            auto inner = parseMapping(parser, YAML_BLOCK_END_TOKEN, error);
             if (inner.isNull())
                 return QSharedPointer<SequencePrivate>();
             seq->children.append(inner);
@@ -111,7 +132,25 @@ QSharedPointer<SequencePrivate> parseSequence(
         }
         case YAML_BLOCK_SEQUENCE_START_TOKEN:   // Inner sequence.
         {
-            auto inner = parseSequence(parser, error);
+            auto inner = parseSequence(parser, YAML_BLOCK_END_TOKEN, error);
+            if (inner.isNull())
+                return QSharedPointer<SequencePrivate>();
+            seq->children.append(inner);
+            break;
+        }
+        case YAML_FLOW_MAPPING_START_TOKEN:    // Inner flow mapping.
+        {
+            auto inner = parseMapping(
+                        parser, YAML_FLOW_MAPPING_END_TOKEN, error);
+            if (inner.isNull())
+                return QSharedPointer<SequencePrivate>();
+            seq->children.append(inner);
+            break;
+        }
+        case YAML_FLOW_SEQUENCE_START_TOKEN:   // Inner flow sequence.
+        {
+            auto inner = parseSequence(
+                        parser, YAML_FLOW_SEQUENCE_END_TOKEN, error);
             if (inner.isNull())
                 return QSharedPointer<SequencePrivate>();
             seq->children.append(inner);
@@ -128,7 +167,7 @@ QSharedPointer<SequencePrivate> parseSequence(
             // TODO: Error on illogical tokens.
             break;
         }
-    } while (token.type != YAML_BLOCK_END_TOKEN);
+    } while (token.type != endTokenType);
 
     return seq;
 }
@@ -169,7 +208,7 @@ DocumentList Parser::parse(yaml_parser_t *parser, ParseError *error)
         // Blocks entries. Delegate to parse functions.
         case YAML_BLOCK_SEQUENCE_START_TOKEN:
         {
-            auto seq = parseSequence(parser, error);
+            auto seq = parseSequence(parser, YAML_BLOCK_END_TOKEN, error);
             if (seq.isNull())
                 return DocumentList();
             documents.append(Document(Sequence((seq))));
@@ -177,7 +216,27 @@ DocumentList Parser::parse(yaml_parser_t *parser, ParseError *error)
         }
         case YAML_BLOCK_MAPPING_START_TOKEN:
         {
-            auto map = parseMapping(parser, error);
+            auto map = parseMapping(parser, YAML_BLOCK_END_TOKEN, error);
+            if (map.isNull())
+                return DocumentList();
+            documents.append(Document(Mapping(map)));
+            break;
+        }
+
+        // Flow entries. Delegate to parse functions.
+        case YAML_FLOW_SEQUENCE_START_TOKEN:
+        {
+            auto seq = parseSequence(
+                        parser, YAML_FLOW_SEQUENCE_END_TOKEN, error);
+            if (seq.isNull())
+                return DocumentList();
+            documents.append(Document(Sequence((seq))));
+            break;
+        }
+        case YAML_FLOW_MAPPING_START_TOKEN:
+        {
+            auto map = parseMapping(
+                        parser, YAML_FLOW_MAPPING_END_TOKEN, error);
             if (map.isNull())
                 return DocumentList();
             documents.append(Document(Mapping(map)));

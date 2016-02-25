@@ -269,3 +269,27 @@ void PracticalTests::testSilos()
     }
     QCOMPARE(siloIndex, 3);
 }
+
+void PracticalTests::testAirConditioners()
+{
+    Sequence acs = docs.first().mapping()["air-conditioners"].toSequence();
+    QCOMPARE(acs.size(), 1);
+
+    Mapping ac = acs.first().toMapping();
+
+    bool ok = false;
+    QCOMPARE(ac["id"].toInt(&ok), 1);
+    QVERIFY(ok);
+
+    Sequence silos = ac["silos"].toSequence();
+    QCOMPARE(silos.size(), 3);
+
+    int ids[3] = {1, 2, 3};
+    Sequence::const_iterator begin = silos.constBegin();
+    for (Sequence::const_iterator it = begin; it != silos.constEnd(); it++)
+    {
+        bool ok = false;
+        QCOMPARE((*it).toInt(&ok), ids[it - begin]);
+        QVERIFY(ok);
+    }
+}

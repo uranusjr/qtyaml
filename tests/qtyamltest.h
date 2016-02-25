@@ -48,6 +48,7 @@ private slots:
     void testSite();
     void testPLCs();
     void testSilos();
+    void testAirConditioners();
 
 private:
     DocumentList docs;
