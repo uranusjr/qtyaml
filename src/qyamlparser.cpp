@@ -15,7 +15,8 @@ static inline QString toString(yaml_token_t *token)
 {
     const char *bytes =
             reinterpret_cast<const char *>(token->data.scalar.value);
-    return QString::fromUtf8(bytes, token->data.scalar.length);
+    int size = reinterpret_cast<int>(token->data.scalar.length);
+    return QString::fromUtf8(bytes, size);
 }
 
 bool parseOne(yaml_parser_t *parser, yaml_token_t *token, ParseError *error)
