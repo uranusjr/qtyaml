@@ -15,7 +15,7 @@ static inline QString toString(yaml_token_t *token)
 {
     const char *bytes =
             reinterpret_cast<const char *>(token->data.scalar.value);
-    int size = reinterpret_cast<int>(token->data.scalar.length);
+    int size = static_cast<int>(token->data.scalar.length);
     return QString::fromUtf8(bytes, size);
 }
 
